@@ -27,7 +27,7 @@ class btn_events():
         pic_list = self.main.data_dict.get_classes_pics(className)
         self.main.ui.list_pics.clear()
         self.main.ui.list_pics.addItems(pic_list)
-        label.setText(className + " num: " + str(len(pic_list)))
+        label.setText(f"{className} pics: {len(pic_list)} / {self.main.data_dict.get_pics_num()} ({round(len(pic_list)/self.main.data_dict.get_pics_num()*100, 2)}%)")
 
     def pic_click(self):
         label = self.main.ui.lab_pic
@@ -42,6 +42,5 @@ class btn_events():
         pass
 
     def make_json(self):
-        other_option = False
-        self.out_json.setting(dataDir, 0.7, other_option)
+        self.out_json.setting(dataDir, 0.7)
         self.out_json.start()

@@ -1,2 +1,4 @@
-dataDir = 'data/'
-train_set = 0.5
+dataDir = 'source/'
+pic_dir = 'data/'
+del_dir = 'data/del'
+train_set = 0.7

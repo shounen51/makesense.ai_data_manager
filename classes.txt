@@ -1,0 +1,10 @@
+Standing
+Bending
+Squatting
+HalfSquatting
+Kneeling
+HandOnFloorKneeling
+Sitting
+HipOnFloorSitting
+Lying
+Others

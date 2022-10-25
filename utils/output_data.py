@@ -34,9 +34,6 @@ def add_in_data(data_json, _data):
         _str = json.dumps(_data, ensure_ascii=False)
         _j.write(_str)
 
-def label2int_switch(label):
-    return label_map[label]
-
 
 class make_json(QThread):
     def __init__(self, main, _list,parent=None):
@@ -47,12 +44,10 @@ class make_json(QThread):
         self.all_labels = {}
         self.train_list = []
         self.test_list = []
-        self.other_option = False
         self._LIST = _list
         
 
-    def setting(self, rootDir, train, other_option):
-        self.other_option = other_option
+    def setting(self, rootDir, train):
         self.rootDir = rootDir
         self.train_set = train
 
@@ -65,18 +60,21 @@ class make_json(QThread):
             return -1
 
     def _collect_label(self):
-        shutil.rmtree('train_data/yolov5_data/images/')
-        shutil.rmtree('train_data/yolov5_data/labels/')
-        os.mkdir('train_data/yolov5_data/images/')
-        os.mkdir('train_data/yolov5_data/labels/')
-        os.mkdir('train_data/yolov5_data/images/train/')
-        os.mkdir('train_data/yolov5_data/images/val/')
-        os.mkdir('train_data/yolov5_data/labels/train/')
-        os.mkdir('train_data/yolov5_data/labels/val/')
-        if not os.path.isdir('train_data/yolov4/images/'):
-            os.mkdir('train_data/yolov4/images/')
-        if not os.path.isdir('train_data/detectron2/all/'):
-            os.mkdir('train_data/detectron2/all/')
+        try:
+            shutil.rmtree('train_data/yolov5_data/images/')
+            shutil.rmtree('train_data/yolov5_data/labels/')
+            shutil.rmtree('train_data/actions/')            
+        except:
+            pass
+        os.makedirs('train_data/actions/train/', exist_ok=True)
+        os.makedirs('train_data/actions/validation/', exist_ok=True)
+        os.makedirs('train_data/yolov5_data/images/train/', exist_ok=True)
+        os.makedirs('train_data/yolov5_data/images/val/', exist_ok=True)
+        os.makedirs('train_data/yolov5_data/labels/train/', exist_ok=True)
+        os.makedirs('train_data/yolov5_data/labels/val/', exist_ok=True)
+        
+        os.makedirs('train_data/yolov4/images/', exist_ok=True)
+        os.makedirs('train_data/detectron2/all/', exist_ok=True)
         rootDir = self.rootDir
         rootDir.replace('\\','\\\\')
         for _file in os.listdir(rootDir):
@@ -201,10 +199,6 @@ class make_json(QThread):
                 obj["segmentation"] = [segmentation]
                 obj['bbox_mode'] = 0
                 l = self._label2int(label)
-                if self.other_option:
-                    l = label2int_switch(l)
-                    if l < 0:
-                        continue
                 obj["category_id"] = l
                 number_dict[label] += 1
                 img = Image.fromarray(frame)
@@ -226,7 +220,7 @@ class make_json(QThread):
     def run(self):
         self.main.set_button_red()
         self._collect_label()
-        self._detectron_data()
+        # self._detectron_data()
         self._darknet_data()
         self.main.set_button_back()
 
